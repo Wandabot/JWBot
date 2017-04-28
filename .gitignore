@@ -1,4 +1,4 @@
 no_upload/
 node_modules/
-*.gitignore
-*.foreverignore
+.gitignore
+.foreverignore
