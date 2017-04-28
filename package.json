@@ -1,0 +1,30 @@
+{
+  "name": "JW-Bot",
+  "version": "1.0.0",
+  "description": "Calls out reposting.",
+  "main": "JWBot.js",
+  "dependencies": {
+    "async": "^2.3.0",
+    "asyncawait": "^1.0.6",
+    "discord-graf": "^0.15.4",
+    "discord.js": "^11.0.0",
+    "graf": "0.0.2",
+    "opusscript": "0.0.3"
+  },
+  "devDependencies": {
+    "discord.js": "^11.0.0"
+  },
+  "scripts": {
+    "test": "ping"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "bot"
+  ],
+  "author": "Uten",
+  "license": "WTFPL",
+  "homepage": ""
+}
