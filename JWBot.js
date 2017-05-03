@@ -96,6 +96,7 @@ async function react(msg){
 	await msg.react("🇯");
 	await msg.react("🇼");
 	await msg.react("❕");
+	await msg.react("👏");
 }
 
 process.on("unhandledRejection", err => {
