@@ -40,10 +40,20 @@ console.log("Logged in successfully.");
 client.on("ready", () => {
 	client.user.setGame(currentGame);
 });
-
+// 👮
 
 client.on("message", msg => {
 	var msgContent = msg.content;
+	if (msgContent.toLowerCase().search("one rank senior")!=-1 || msgContent.toLowerCase().search("one rank superior")!=-1){
+		if (Math.random()*100 > 96) {
+		  	msg.react("👮");
+		}
+	}
+	if (msgContent.toLowerCase().search("ac-12")!=-1){
+		if (Math.random()*100 > 96) {
+			msg.react("🚔");
+		}
+	};
   	var SearchForTwit = msgContent.search("twitter.com/"); // status-(twit+11)=username
   	var SearchForStatus = msgContent.search("/status/");
   	if(SearchForTwit!=-1 && SearchForStatus>SearchForTwit && msgContent[0]!=">"){
