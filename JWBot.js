@@ -45,12 +45,12 @@ client.on("ready", () => {
 client.on("message", msg => {
 	var msgContent = msg.content;
 	if (msgContent.toLowerCase().search("one rank senior")!=-1 || msgContent.toLowerCase().search("one rank superior")!=-1){
-		if (Math.random()*100 > 96) {
+		if (Math.random()*100 > 94) {
 		  	msg.react("👮");
 		}
 	}
 	if (msgContent.toLowerCase().search("ac-12")!=-1){
-		if (Math.random()*100 > 96) {
+		if (Math.random()*100 > 94) {
 			msg.react("🚔");
 		}
 	};
