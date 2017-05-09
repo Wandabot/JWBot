@@ -15,7 +15,7 @@ var fs = require("fs");
 // Variable variables. The best type of variable.
 
 var discord_Token = fs.readFileSync("./no_upload/token.txt").toString();
-var currentGame = "with adorable cats. :3";
+var currentGame = "Detective Inspector Matthew 'Dot' Cottan.";
 var botName = "JWBot";
 
 // Non-variable variables. Slightly worse.
@@ -44,7 +44,7 @@ client.on("ready", () => {
 
 client.on("message", msg => {
 	var msgContent = msg.content;
-	if (msgContent.toLowerCase().search("one rank senior")!=-1 || msgContent.toLowerCase().search("one rank superior")!=-1){
+	if (msgContent.toLowerCase().search("one rank senior")!=-1 || msgContent.toLowerCase().search("one rank superior")!=-1 || msgContent.toLowerCase().search("one rank higher")!=-1){
 		if (Math.random()*100 > 94) {
 		  	msg.react("👮");
 		}
