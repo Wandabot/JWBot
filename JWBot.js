@@ -15,7 +15,7 @@ var fs = require("fs");
 // Variable variables. The best type of variable.
 
 var discord_Token = fs.readFileSync("./no_upload/token.txt").toString();
-var currentGame = "Detective Inspector Matthew 'Dot' Cottan.";
+var currentGame = "Detective Inspectør Mætthew 'Døt' Cøttæn.";
 var botName = "JWBot";
 
 // Non-variable variables. Slightly worse.
