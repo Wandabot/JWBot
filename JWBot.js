@@ -72,8 +72,12 @@ client.on("message", msg => {
 		        var LookInLinks = links.indexOf(UsernameToEnd);
 		        if(LookInLinks!=-1){
 					console.log("thanks jw",UsernameToEnd);
-		          	react(msg);
-          			RefreshLinks();
+					if (Math.random()<=0.05){
+		          		reactEsp(msg);
+					} else {
+						react(msg);
+					}
+					RefreshLinks();
         		} else {
           			console.log("Attempting to add link",UsernameToEnd)
 					fs.appendFile('./no_upload/twitLinks.txt', "\n"+UsernameToEnd, function(err) {
@@ -107,6 +111,22 @@ async function react(msg){
 	await msg.react("🇼");
 	await msg.react("❕");
 	await msg.react("👏");
+}
+
+
+async function reactEsp(msg){
+	await msg.react("🇬");
+	await msg.react("🇷");
+	await msg.react("🇦")
+	await msg.react("🇨");
+	await msg.react("🇮");
+	await msg.react("🅰");
+	await msg.react("🇸");
+	await msg.react("🇪🇸");
+	await msg.react("🇯");
+	await msg.react("🇼");
+	await msg.react("❕");
+	await msg.react("🌮");
 }
 
 process.on("unhandledRejection", err => {
