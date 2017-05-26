@@ -18,6 +18,11 @@ var discord_Token = fs.readFileSync("./no_upload/token.txt").toString();
 var currentGame = "Detective Inspector Matthew 'Dot' Cottan.";
 var botName = "JWBot";
 
+var Roles = {
+
+};
+
+
 // Non-variable variables. Slightly worse.
 
 var links;
@@ -56,8 +61,12 @@ client.on("message", msg => {
 	};
   	var SearchForTwit = msgContent.search("twitter.com/"); // status-(twit+11)=username
   	var SearchForStatus = msgContent.search("/status/");
+	if(msgContent.search("twitter.com/DPJHodges")!=-1 && msg.author.id=="213576327335247872"){
+		reactHod(msg);
+	};
   	if(SearchForTwit!=-1 && SearchForStatus>SearchForTwit && msgContent[0]!=">"){
     	RefreshLinks();
+		msg.clearReactions();
 	    var SpaceCont = msgContent.replace( /\n/g," ");
 	    var ActualLinkArray = SpaceCont.split(" ");
 	    for(var i in ActualLinkArray) {
@@ -109,6 +118,21 @@ async function react(msg){
 	await msg.react(mid);
 	await msg.react("🇯");
 	await msg.react("🇼");
+	await msg.react("❕");
+	await msg.react("👏");
+}
+
+async function reactHod(msg){
+	var mid = emojis[Math.floor(Math.random() * emojis.length)].toString();
+	await msg.react("🇳");
+	await msg.react("🇴");
+	await msg.react(mid);
+	await msg.react("🇭");
+	await msg.react("⭕");
+	await msg.react("🇩");
+	await msg.react("🇬");
+	await msg.react("🇪");
+	await msg.react("🇸");
 	await msg.react("❕");
 	await msg.react("👏");
 }
