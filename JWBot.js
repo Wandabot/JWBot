@@ -61,7 +61,7 @@ client.on("message", msg => {
 	};
   	var SearchForTwit = msgContent.search("twitter.com/"); // status-(twit+11)=username
   	var SearchForStatus = msgContent.search("/status/");
-	if(msgContent.search("twitter.com/DPJHodges")!=-1 && msg.author.id=="213576327335247872"){
+	if(msgContent.toLowerCase().search("twitter.com/dpjhodges")!=-1 && msg.author.id=="213576327335247872"){
 		reactHod(msg);
 	};
   	if(SearchForTwit!=-1 && SearchForStatus>SearchForTwit && msgContent[0]!=">"){
