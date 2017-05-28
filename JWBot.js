@@ -47,26 +47,37 @@ client.on("ready", () => {
 });
 // 👮
 
+function isLetter(str) {
+  return str.length === 1 && str.match(/[a-z]/i);
+}
+
+function searchforstr(msgContent,str){
+	if (msgContent.toLowerCase().search(str)!=-1 && (!isLetter(msgContent.toLowerCase().substring(msgContent.toLowerCase().search(str)-1,msgContent.toLowerCase().search(str))) || msgContent.toLowerCase().search(str)==0)){
+		return true;
+	}
+}
+
+
 client.on("message", msg => {
 	//	msg.react("mack:244108925828333568");
 	var msgContent = msg.content;
-	if (msgContent.toLowerCase().search("one rank senior")!=-1 || msgContent.toLowerCase().search("one rank superior")!=-1 || msgContent.toLowerCase().search("one rank higher")!=-1){
+	if (searchforstr(msgContent,"one rank senior") || searchforstr(msgContent,"one rank superior") || searchforstr(msgContent,"one rank higher")){
 		if (Math.random()*100 > 94) {
 		  	msg.react("👮");
 		}
 	};
-	if (msgContent.toLowerCase().search("ac-12")!=-1){
-		if (Math.random()*100 > 94) {
+	if (searchforstr(msgContent,"ac-12")){
+		if (Math.random()*100 > 90) {
 			msg.react("🚔");
 		}
 	};
 	if (msgContent.toLowerCase()=="renationalise!"){
 		msg.react("🚆");
 	};
-	if (msgContent.toLowerCase().search("hot take")!=-1){
+	if (searchforstr(msgContent,"hot take")){
 		msg.react("🔥");
 	};
-	if (msgContent.toLowerCase().search("wew")!=-1 || msgContent.toLowerCase().search("w e w")!=-1){
+	if (searchforstr(msgContent,"wew") || searchforstr(msgContent,"w e w")){
 		var ran = Math.random()*100;
 		if (ran < 33) {
 			msg.react("vote_no:244160094839898113");
