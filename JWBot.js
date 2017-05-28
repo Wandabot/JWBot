@@ -67,7 +67,14 @@ client.on("message", msg => {
 		msg.react("🔥");
 	};
 	if (msgContent.toLowerCase().search("wew")!=-1 || msgContent.toLowerCase().search("w e w")!=-1){
-		reactwew(msg);
+		var ran = Math.random()*100;
+		if (ran < 33) {
+			msg.react("vote_no:244160094839898113");
+		} else if (ran > 66) {
+			msg.react("🚫");
+		} else {
+			msg.react("🙅");
+		}
 	};
   	var SearchForTwit = msgContent.search("twitter.com/"); // status-(twit+11)=username
   	var SearchForStatus = msgContent.search("/status/");
@@ -130,13 +137,6 @@ async function react(msg){
 	await msg.react("🇼");
 	await msg.react("❕");
 	await msg.react("👏");
-}
-
-async function reactwew(msg){
-	await msg.react("🇸");
-	await msg.react("🇹");
-	await msg.react("🇴");
-	await msg.react("🇵");
 }
 
 async function reactHod(msg){
