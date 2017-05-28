@@ -48,16 +48,26 @@ client.on("ready", () => {
 // 👮
 
 client.on("message", msg => {
+	//	msg.react("mack:244108925828333568");
 	var msgContent = msg.content;
 	if (msgContent.toLowerCase().search("one rank senior")!=-1 || msgContent.toLowerCase().search("one rank superior")!=-1 || msgContent.toLowerCase().search("one rank higher")!=-1){
 		if (Math.random()*100 > 94) {
 		  	msg.react("👮");
 		}
-	}
+	};
 	if (msgContent.toLowerCase().search("ac-12")!=-1){
 		if (Math.random()*100 > 94) {
 			msg.react("🚔");
 		}
+	};
+	if (msgContent.toLowerCase()=="renationalise!"){
+		msg.react("🚆");
+	};
+	if (msgContent.toLowerCase().search("hot take")!=-1){
+		msg.react("🔥");
+	};
+	if (msgContent.toLowerCase().search("wew")!=-1 || msgContent.toLowerCase().search("w e w")!=-1){
+		reactwew(msg);
 	};
   	var SearchForTwit = msgContent.search("twitter.com/"); // status-(twit+11)=username
   	var SearchForStatus = msgContent.search("/status/");
@@ -84,7 +94,7 @@ client.on("message", msg => {
 					if (Math.random()<=0.05){
 		          		reactEsp(msg);
 					} else {
-						react(msg);
+						try { react(msg) } catch(err) { console.log(err); };
 					}
 					RefreshLinks();
         		} else {
@@ -120,6 +130,13 @@ async function react(msg){
 	await msg.react("🇼");
 	await msg.react("❕");
 	await msg.react("👏");
+}
+
+async function reactwew(msg){
+	await msg.react("🇸");
+	await msg.react("🇹");
+	await msg.react("🇴");
+	await msg.react("🇵");
 }
 
 async function reactHod(msg){
