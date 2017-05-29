@@ -77,7 +77,7 @@ client.on("message", msg => {
 	if (searchforstr(msgContent,"hot take")){
 		msg.react("🔥");
 	};
-	if (searchforstr(msgContent,"wew") || searchforstr(msgContent,"w e w")){
+	/*if (searchforstr(msgContent,"wew") || searchforstr(msgContent,"w e w")){
 		var ran = Math.random()*100;
 		if (ran < 33) {
 			msg.react("vote_no:244160094839898113");
@@ -86,7 +86,7 @@ client.on("message", msg => {
 		} else {
 			msg.react("🙅");
 		}
-	};
+	};*/
   	var SearchForTwit = msgContent.search("twitter.com/"); // status-(twit+11)=username
   	var SearchForStatus = msgContent.search("/status/");
 	if(msgContent.toLowerCase().search("twitter.com/dpjhodges")!=-1 && msg.author.id=="213576327335247872"){
