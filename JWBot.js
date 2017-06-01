@@ -111,8 +111,11 @@ client.on("message", msg => {
 		        var LookInLinks = links.indexOf(UsernameToEnd);
 		        if(LookInLinks!=-1){
 					console.log("thanks jw",UsernameToEnd);
-					if (Math.random()<=0.05){
+					var ranNum = Math.random();
+					if (ranNum<=0.05){
 		          		reactEsp(msg);
+					} else if (ranNum<=0.1) {
+						reactFra(msg);
 					} else {
 						try { react(msg) } catch(err) { console.log(err); };
 					}
@@ -183,6 +186,19 @@ async function reactEsp(msg){
 	await msg.react("🇼");
 	await msg.react("❕");
 	await msg.react("🌮");
+}
+
+async function reactFra(msg){
+	await msg.react("🇲");
+	await msg.react("🇪");
+	await msg.react("🇷")
+	await msg.react("🇨");
+	await msg.react("🇮");
+	await msg.react("🇫🇷");
+	await msg.react("🇯");
+	await msg.react("🇼");
+	await msg.react("❕");
+	await msg.react("🥖");
 }
 
 process.on("unhandledRejection", err => {
