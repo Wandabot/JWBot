@@ -48,7 +48,7 @@ client.on("ready", () => {
 // 👮
 
 function isLetter(str) {
-  return str.length === 1 && str.match(/[a-z]/i);
+  return str.length === 1 && str.match(/[a-z>0-9]/i);
 }
 
 function searchforstr(msgContent,str){
@@ -61,9 +61,19 @@ client.on("error",console.error);
 
 process.on("unhandledRejection",console.log);
 
+
 client.on("message", msg => {
+	general(msg);
+})
+
+
 	//	msg.react("mack:244108925828333568");
+
+function general(msg){
 	var msgContent = msg.content;
+	/*if (searchforstr(msgContent,"snake") && msg.author.username=="dan"){
+		msg.reply("snake: "+msg.guild.members.array()[Math.floor(Math.random() * msg.guild.members.array().length)].displayName);
+	};*/
 	if (searchforstr(msgContent,"one rank senior") || searchforstr(msgContent,"one rank superior") || searchforstr(msgContent,"one rank higher")){
 		if (Math.random()*100 > 94) {
 		  	msg.react("👮");
@@ -134,7 +144,7 @@ client.on("message", msg => {
       }
     }
   };
-})
+}
 
 var emoji = "💁 👮 👿 🏇 🚅 🍖 🍫 🎫 🎼 🍠 👯 🐯 🏃 💃 🍪 🙅 🍤 🚐 🐸 🚈 💄 🐓 🐕 😛 🐜 😄 🍢 🐳 🍯 🚳 😍 🚪 🎺 😉 🍛 🐣 🐢 🚫 🚟 😃 😠 🚂 💀 🏂 🐧 😥 😶 🏆 🐲 🚚 🚒 🎶 😖 🚣 🎣 🚭 👰 🎷 🐻 🎾 👨 🚿 🎲 👫 🚜 🚢 🚹 😙 😴 🐴 🚲 🍝 🍣 😎 🐟 👶 😭 🍜 😽 😻 🐔 🎽 👱 💆 🙊 🐭 🚝 🍟 😐 🙀 👧 😦 🍮 🚰 🚤 🏈 🎵 😗 🚦 👪 🎸 😓 🍭 😞 🎤 😡 👩 🍙 😂 🐬 🏀 🏁 👸 🐩 🚑 🍨 😒 😈 😳 🎧 😣 😔 🚏 🎨 😨 😫 😲 🐑 👻 🎹 😼 🐦 🚊 🎪 🚱 🚧 🚋 💅 👽 🚾 🐒 🍱 🍞 🚎 🎴 😑 🙌 🎩 🚞 🚶 😕 🐺 🐗 🚩 🎯 🐼 🐮 😇 🚴 🍡 🚌 🎻 🚕 🚁 😱 😆 🍲 😏 😧 🚓 🍕 🚼 🐽 👴 👳 🙇 👦 🐠 🐱 🚃 🚆 🐷 😘 😬 😚"
 
