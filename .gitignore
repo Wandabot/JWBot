@@ -2,3 +2,4 @@ no_upload/
 node_modules/
 .gitignore
 .foreverignore
+_gsdata_/

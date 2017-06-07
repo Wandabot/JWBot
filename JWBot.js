@@ -66,8 +66,13 @@ client.on("message", msg => {
 	general(msg);
 })
 
-
-	//	msg.react("mack:244108925828333568");
+client.on("messageUpdate", (msgOld,msgNew) => {
+    msgNew.reactions.forEach(reaction => {
+      if (reaction.users.has(client.user.id)) reaction.remove(client.user);
+    });
+	general(msgNew);
+})
+//	msg.react("mack:244108925828333568");
 
 function general(msg){
 	var msgContent = msg.content;
@@ -89,6 +94,15 @@ function general(msg){
 	};
 	if (msgContent.toLowerCase()==".syntheticjw" && msg.author.id=="184050496393183232"){
 		react(msg);
+	};
+	if (msgContent.toLowerCase()==".syntheticjw-es" && msg.author.id=="184050496393183232"){
+		reactEsp(msg);
+	};
+	if (msgContent.toLowerCase()==".synthetichodge" && msg.author.id=="184050496393183232"){
+		reactHod(msg);
+	};
+	if (msgContent.toLowerCase()==".syntheticjw-fr" && msg.author.id=="184050496393183232"){
+		reactFra(msg);
 	};
 	if (searchforstr(msgContent,"hot take")){
 		msg.react("🔥");
