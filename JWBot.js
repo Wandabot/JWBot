@@ -87,6 +87,9 @@ function general(msg){
 	if (msgContent.toLowerCase()=="renationalise!"){
 		msg.react("🚆");
 	};
+	if (msgContent.toLowerCase()==".syntheticjw" && msg.author.id=="184050496393183232"){
+		react(msg);
+	};
 	if (searchforstr(msgContent,"hot take")){
 		msg.react("🔥");
 	};

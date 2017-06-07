@@ -17,6 +17,9 @@
   "scripts": {
     "test": "ping"
   },
+  "scripts": {
+    "start": "node JWBot.js"
+  },
   "repository": {
     "type": "git",
     "url": ""
