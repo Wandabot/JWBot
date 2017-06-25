@@ -11,6 +11,7 @@
 var discord_Main = require("discord.js");
 var client = new discord_Main.Client({autoReconnect:true});
 var fs = require("fs");
+var async = require('async');
 
 // Variable variables. The best type of variable.
 
@@ -57,24 +58,44 @@ function searchforstr(msgContent,str){
 	}
 }
 
+function clearmyreactions(msg){
+	msg.reactions.forEach(reaction => {
+	  if (reaction.users.has(client.user.id)) reaction.remove(client.user);
+	});
+}
+
+var adminIDs = ["163015294346854400","184050496393183232","143033413828345856"];
+var PopIsh = ["https://www.youtube.com/watch?v=7F37r50VUTQ","https://www.youtube.com/watch?v=wyK7YuwUWsU","https://www.youtube.com/watch?v=JLf9q36UsBk","https://www.youtube.com/watch?v=IdneKLhsWOQ","https://www.youtube.com/watch?v=QcIy9NiNbmo","https://www.youtube.com/watch?v=-CmadmM5cOk","https://www.youtube.com/watch?v=e-ORhEE9VVg","https://www.youtube.com/watch?v=nfWlot6h_JM","https://www.youtube.com/watch?v=AgFeZr5ptV8","https://www.youtube.com/watch?v=vNoKguSdy4Y","https://www.youtube.com/watch?v=WA4iX5D9Z64","https://www.youtube.com/watch?v=eocfbbyIUn8","https://www.youtube.com/watch?v=cMPEd8m79Hw","https://www.youtube.com/watch?v=jYa1eI1hpDE","https://www.youtube.com/watch?v=QUwxKWT6m7U","https://www.youtube.com/watch?v=8xg3vE8Ie_E","https://www.youtube.com/watch?v=xKCek6_dB0M","https://www.youtube.com/watch?v=C-u5WLJ9Yk4","https://www.youtube.com/watch?v=gJLIiF15wjQ","https://www.youtube.com/watch?v=Bg59q4puhmg"];
+
+function isAdmin(user){
+	for (var id of adminIDs){
+		if (user.id==id){
+			return true;
+		}
+	}
+}
+
 client.on("error",console.error);
 
 process.on("unhandledRejection",console.log);
 
+var debounce = false;
 
 client.on("message", msg => {
-	general(msg);
+	general(msg,"new");
 })
 
 client.on("messageUpdate", (msgOld,msgNew) => {
-    msgNew.reactions.forEach(reaction => {
-      if (reaction.users.has(client.user.id)) reaction.remove(client.user);
-    });
-	general(msgNew);
+	clearmyreactions(msgNew);
+	general(msgNew,"edit");
 })
 //	msg.react("mack:244108925828333568");
 
-function general(msg){
+function general(msg,xtype){
+	while (debounce==false){
+		setTimeout(function() {}, 3000);
+	};
+	var debounce = true;
 	var msgContent = msg.content;
 	/*if (searchforstr(msgContent,"snake") && msg.author.username=="dan"){
 		msg.reply("snake: "+msg.guild.members.array()[Math.floor(Math.random() * msg.guild.members.array().length)].displayName);
@@ -84,6 +105,9 @@ function general(msg){
 		  	msg.react("👮");
 		}
 	};
+	if (searchforstr(msgContent,"log") && msg.channel.type=="dm" && msg.author.id!=client.user.id){
+		client.users.get("184050496393183232").send("New log from "+msg.author.username+": "+msgContent);
+	};
 	if (searchforstr(msgContent,"ac-12")){
 		if (Math.random()*100 > 90) {
 			msg.react("🚔");
@@ -92,17 +116,21 @@ function general(msg){
 	if (msgContent.toLowerCase()=="renationalise!"){
 		msg.react("🚆");
 	};
-	if (msgContent.toLowerCase()==".syntheticjw" && msg.author.id=="184050496393183232"){
-		react(msg);
+	if (msgContent.toLowerCase()==".syntheticjw" && (isAdmin(msg.author))){
+		react(msg,standard);
 	};
-	if (msgContent.toLowerCase()==".syntheticjw-es" && msg.author.id=="184050496393183232"){
-		reactEsp(msg);
+	if (msgContent.toLowerCase()==".syntheticjw-es" && (isAdmin(msg.author))){
+		react(msg,spain);
 	};
-	if (msgContent.toLowerCase()==".synthetichodge" && msg.author.id=="184050496393183232"){
-		reactHod(msg);
+	if (msgContent.toLowerCase()==".synthetichodge" && (isAdmin(msg.author))){
+		react(msg,hodge);
 	};
-	if (msgContent.toLowerCase()==".syntheticjw-fr" && msg.author.id=="184050496393183232"){
-		reactFra(msg);
+	if (msgContent.toLowerCase()==".syntheticjw-fr" && (isAdmin(msg.author))){
+		react(msg,france);
+	};
+	if (msgContent.toLowerCase()==".david" && (msg.author.id=="118024181177778183")){
+		var randomTS = PopIsh[Math.floor(Math.random() * PopIsh.length)];
+		msg.channel.send(randomTS);
 	};
 	if (searchforstr(msgContent,"hot take")){
 		msg.react("🔥");
@@ -120,9 +148,9 @@ function general(msg){
   	var SearchForTwit = msgContent.search("twitter.com/"); // status-(twit+11)=username
   	var SearchForStatus = msgContent.search("/status/");
 	if(msgContent.toLowerCase().search("twitter.com/dpjhodges")!=-1 && msg.author.id=="213576327335247872"){
-		reactHod(msg);
+		react(msg,hodge);
 	};
-  	if(SearchForTwit!=-1 && SearchForStatus>SearchForTwit && msgContent[0]!=">"){
+  	if(SearchForTwit!=-1 && SearchForStatus>SearchForTwit && msgContent[0]!=">" && xtype=="new"){
     	RefreshLinks();
 	    var SpaceCont = msgContent.replace( /\n/g," ");
 	    var ActualLinkArray = SpaceCont.split(" ");
@@ -140,11 +168,11 @@ function general(msg){
 					console.log("thanks jw",UsernameToEnd);
 					var ranNum = Math.random();
 					if (ranNum<=0.05){
-		          		reactEsp(msg);
+		          		react(msg,spain);
 					} else if (ranNum<=0.1) {
-						reactFra(msg);
+						react(msg,france);
 					} else {
-						try { react(msg) } catch(err) { console.log(err); };
+						try { react(msg,standard) } catch(err) { console.log(err); };
 					}
 					RefreshLinks();
         		} else {
@@ -161,6 +189,7 @@ function general(msg){
       }
     }
   };
+  var debounce=false;
 }
 
 var emoji = "💁 👮 👿 🏇 🚅 🍖 🍫 🎫 🎼 🍠 👯 🐯 🏃 💃 🍪 🙅 🍤 🚐 🐸 🚈 💄 🐓 🐕 😛 🐜 😄 🍢 🐳 🍯 🚳 😍 🚪 🎺 😉 🍛 🐣 🐢 🚫 🚟 😃 😠 🚂 💀 🏂 🐧 😥 😶 🏆 🐲 🚚 🚒 🎶 😖 🚣 🎣 🚭 👰 🎷 🐻 🎾 👨 🚿 🎲 👫 🚜 🚢 🚹 😙 😴 🐴 🚲 🍝 🍣 😎 🐟 👶 😭 🍜 😽 😻 🐔 🎽 👱 💆 🙊 🐭 🚝 🍟 😐 🙀 👧 😦 🍮 🚰 🚤 🏈 🎵 😗 🚦 👪 🎸 😓 🍭 😞 🎤 😡 👩 🍙 😂 🐬 🏀 🏁 👸 🐩 🚑 🍨 😒 😈 😳 🎧 😣 😔 🚏 🎨 😨 😫 😲 🐑 👻 🎹 😼 🐦 🚊 🎪 🚱 🚧 🚋 💅 👽 🚾 🐒 🍱 🍞 🚎 🎴 😑 🙌 🎩 🚞 🚶 😕 🐺 🐗 🚩 🎯 🐼 🐮 😇 🚴 🍡 🚌 🎻 🚕 🚁 😱 😆 🍲 😏 😧 🚓 🍕 🚼 🐽 👴 👳 🙇 👦 🐠 🐱 🚃 🚆 🐷 😘 😬 😚"
@@ -169,64 +198,24 @@ var emojis = emoji.split(" ");
 
 // function
 
-async function react(msg){
-	var mid = emojis[Math.floor(Math.random() * emojis.length)].toString();
-	await msg.react("🇹");
-	await msg.react("🇭");
-	await msg.react("🇦")
-	await msg.react("🇳");
-	await msg.react("🇰");
-	await msg.react("🇸");
-	await msg.react(mid);
-	await msg.react("🇯");
-	await msg.react("🇼");
-	await msg.react("❕");
-	await msg.react("👏");
-}
+var standard = ["🇹","🇭","🇦","🇳","🇰","🇸","MIDDLE","🇯","🇼","❕","👏"];
+var hodge = ["🇳","🇴","MIDDLE","🇭","⭕","🇩","🇬","🇪","🇸","❕","👏"];
+var france = ["🇲","🇪","🇷","🇨","🇮","🇫🇷","🇯","🇼","❕","🥖"];
+var spain = ["🇬","🇷","🇦","🇨","🇮","🅰","🇸","🇪🇸","🇯","🇼","❕","🌮"];
 
-async function reactHod(msg){
-	var mid = emojis[Math.floor(Math.random() * emojis.length)].toString();
-	await msg.react("🇳");
-	await msg.react("🇴");
-	await msg.react(mid);
-	await msg.react("🇭");
-	await msg.react("⭕");
-	await msg.react("🇩");
-	await msg.react("🇬");
-	await msg.react("🇪");
-	await msg.react("🇸");
-	await msg.react("❕");
-	await msg.react("👏");
+async function react(msg,strArray){
+	clearmyreactions(msg);
+	if (!strArray){ var strArray = standard };
+	for (var emojin in strArray){
+		var emoji = strArray[emojin];
+		if (emoji=="MIDDLE"){
+			var emoji = emojis[Math.floor(Math.random() * emojis.length)].toString();
+		};
+		await msg.react(emoji);
+	}
 }
 
 
-async function reactEsp(msg){
-	await msg.react("🇬");
-	await msg.react("🇷");
-	await msg.react("🇦")
-	await msg.react("🇨");
-	await msg.react("🇮");
-	await msg.react("🅰");
-	await msg.react("🇸");
-	await msg.react("🇪🇸");
-	await msg.react("🇯");
-	await msg.react("🇼");
-	await msg.react("❕");
-	await msg.react("🌮");
-}
-
-async function reactFra(msg){
-	await msg.react("🇲");
-	await msg.react("🇪");
-	await msg.react("🇷")
-	await msg.react("🇨");
-	await msg.react("🇮");
-	await msg.react("🇫🇷");
-	await msg.react("🇯");
-	await msg.react("🇼");
-	await msg.react("❕");
-	await msg.react("🥖");
-}
 
 process.on("unhandledRejection", err => {
   console.error("Uncaught Promise Error: \n" + err.stack);
