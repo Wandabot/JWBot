@@ -64,8 +64,28 @@ function clearmyreactions(msg){
 	});
 }
 
-var adminIDs = ["163015294346854400","184050496393183232","143033413828345856"];
-var PopIsh = ["https://www.youtube.com/watch?v=7F37r50VUTQ","https://www.youtube.com/watch?v=wyK7YuwUWsU","https://www.youtube.com/watch?v=JLf9q36UsBk","https://www.youtube.com/watch?v=IdneKLhsWOQ","https://www.youtube.com/watch?v=QcIy9NiNbmo","https://www.youtube.com/watch?v=-CmadmM5cOk","https://www.youtube.com/watch?v=e-ORhEE9VVg","https://www.youtube.com/watch?v=nfWlot6h_JM","https://www.youtube.com/watch?v=AgFeZr5ptV8","https://www.youtube.com/watch?v=vNoKguSdy4Y","https://www.youtube.com/watch?v=WA4iX5D9Z64","https://www.youtube.com/watch?v=eocfbbyIUn8","https://www.youtube.com/watch?v=cMPEd8m79Hw","https://www.youtube.com/watch?v=jYa1eI1hpDE","https://www.youtube.com/watch?v=QUwxKWT6m7U","https://www.youtube.com/watch?v=8xg3vE8Ie_E","https://www.youtube.com/watch?v=xKCek6_dB0M","https://www.youtube.com/watch?v=C-u5WLJ9Yk4","https://www.youtube.com/watch?v=gJLIiF15wjQ","https://www.youtube.com/watch?v=Bg59q4puhmg"];
+function addLink(msg,aftercommand){
+	if (aftercommand){
+    	var cmdNewLineFix2 = aftercommand.replace(/(\r\n|\n|\r)/gm," ");
+		if (cmdNewLineFix2.search("youtube.com/watch")!=-1){
+			var cmdNewLineFix = cmdNewLineFix2;
+			fs.appendFile('./no_upload/david.txt', "\n"+cmdNewLineFix, function(err) {
+				if (err) {
+					console.log("OH GOD");
+				} else {
+					msg.reply("Worked <3");
+				}
+			});
+		}
+	}
+};
+
+var adminIDs = ["163015294346854400","184050496393183232"];
+
+function RefreshPop(){
+		PopIsh = fs.readFileSync("./no_upload/david.txt").toString().split("\n");
+}
+RefreshPop();
 
 function isAdmin(user){
 	for (var id of adminIDs){
@@ -132,6 +152,13 @@ function general(msg,xtype){
 		var randomTS = PopIsh[Math.floor(Math.random() * PopIsh.length)];
 		msg.channel.send(randomTS);
 	};
+	if (msg.author.id=="118024181177778183" && msg.channel.type=="dm"){
+		var command = msgContent.split(" ")[0].toLowerCase(); // take the first word and get everything after the first letter.
+		var aftercommand = msgContent.substring(command.length+1); // take the second word and onwards
+		if (command==".add"){
+			addLink(msg,aftercommand);
+		}
+	}
 	if (searchforstr(msgContent,"hot take")){
 		msg.react("🔥");
 	};
