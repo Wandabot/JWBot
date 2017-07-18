@@ -135,11 +135,11 @@ client.on('messageReactionAdd', (reaction, user) => {
 			var stopx = true;
 			react(reactedmessage,lockarray);
 			// locked and ready to proceed
-			// var ranCol = Number('0x'+Math.floor(Math.random()*16777215).toString(16));
+			var ranCol = Number('0x'+Math.floor(Math.random()*16777215).toString(16));
 			if (checkURL(msgContent)){
-				richEmbedMessage(client,reactedmessage,0x900020,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id);
+				richEmbedMessage(client,reactedmessage,ranCol,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id);
 			} else {
-				embedMessage(client,reactedmessage,0x900020,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id);
+				embedMessage(client,reactedmessage,ranCol,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id);
 			}
 		}
 	}
@@ -296,7 +296,8 @@ function richEmbedMessage(client,msg,colour,title,url,link,footer,del){
 		.setImage(link)
 		.setTimestamp()
 		.setURL(link)
-		.setFooter(footer,url)
+		.setFooter(footer,"http://i.imgur.com/eaxRtLk.png")
+		.setThumbnail(msg.author.avatarURL)
 	channelX.send({embed}).catch(err => {
 			console.error("err:"+err.toString());
 		})
