@@ -181,6 +181,7 @@ function general(msg,xtype){
 		msg.react("🚆");
 	};
 	if (msgContent.toLowerCase()==".syntheticjw" && (isAdmin(msg.author))){
+		client.user.setGame(currentGame);
 		react(msg,standard);
 	};
 	if (msgContent.toLowerCase()==".syntheticjw-es" && (isAdmin(msg.author))){
