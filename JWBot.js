@@ -16,8 +16,10 @@ var async = require('async');
 // Variable variables. The best type of variable.
 
 var discord_Token = fs.readFileSync("./no_upload/token.txt").toString();
-var currentGame = "Detective Inspector Matthew 'Dot' Cottan.";
+var currentGame = "Big Pimpin' by Jay-Z.";
 var botName = "JWBot";
+
+var StarChannelID = "336923536117465088"; // 173036701499916288 voice 173163520043646976 main 336923536117465088 pin
 
 var Roles = {
 
@@ -58,6 +60,10 @@ function searchforstr(msgContent,str){
 	}
 }
 
+function checkURL(url) {
+    return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+}
+
 function clearmyreactions(msg){
 	msg.reactions.forEach(reaction => {
 	  if (reaction.users.has(client.user.id)) reaction.remove(client.user);
@@ -81,6 +87,10 @@ function addLink(msg,aftercommand){
 };
 
 var adminIDs = ["163015294346854400","184050496393183232"];
+var remoji = require("node-emoji");
+
+var addToBoard = remoji.emojify(':pushpin:').toString();
+var lock = remoji.emojify(':lock:').toString();
 
 function RefreshPop(){
 		PopIsh = fs.readFileSync("./no_upload/david.txt").toString().split("\n");
@@ -95,11 +105,45 @@ function isAdmin(user){
 	}
 }
 
+var lockarray = [lock];
+
 client.on("error",console.error);
 
 process.on("unhandledRejection",console.log);
 
 var debounce = false;
+
+client.on('messageReactionAdd', (reaction, user) => {
+	var stopx = false;
+	var reactedmessage = reaction.message;
+	var msgContent = reactedmessage.content;
+	var reactemoji = reaction.emoji.toString();
+	if (reactedmessage.guild.id!="173036701499916288"){ // 173036701499916288 336891077854363649
+		var stopx=true;
+	}
+	if (reactemoji.toLowerCase() == addToBoard.toLowerCase() && (!reaction.me) && (reactedmessage.author.id!=client.user.id) && (reaction.count>=5)){ //(reactedmessage.author.id!=user.id)
+		// is the right emoji
+		var reactions = reactedmessage.reactions.values();
+		for (var reactionx of reactions){
+			if (reactionx.me && (reactionx.emoji.toString() == lock)){
+				// Already pinned x
+				console.log("Already pinned.");
+				var stopx = true;
+			}
+		}
+		if (stopx==false){
+			var stopx = true;
+			react(reactedmessage,lockarray);
+			// locked and ready to proceed
+			// var ranCol = Number('0x'+Math.floor(Math.random()*16777215).toString(16));
+			if (checkURL(msgContent)){
+				richEmbedMessage(client,reactedmessage,0x900020,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id);
+			} else {
+				embedMessage(client,reactedmessage,0x900020,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id);
+			}
+		}
+	}
+});
 
 client.on("message", msg => {
 	general(msg,"new");
@@ -219,16 +263,17 @@ function general(msg,xtype){
   var debounce=false;
 }
 
-var emoji = "💁 👮 👿 🏇 🚅 🍖 🍫 🎫 🎼 🍠 👯 🐯 🏃 💃 🍪 🙅 🍤 🚐 🐸 🚈 💄 🐓 🐕 😛 🐜 😄 🍢 🐳 🍯 🚳 😍 🚪 🎺 😉 🍛 🐣 🐢 🚫 🚟 😃 😠 🚂 💀 🏂 🐧 😥 😶 🏆 🐲 🚚 🚒 🎶 😖 🚣 🎣 🚭 👰 🎷 🐻 🎾 👨 🚿 🎲 👫 🚜 🚢 🚹 😙 😴 🐴 🚲 🍝 🍣 😎 🐟 👶 😭 🍜 😽 😻 🐔 🎽 👱 💆 🙊 🐭 🚝 🍟 😐 🙀 👧 😦 🍮 🚰 🚤 🏈 🎵 😗 🚦 👪 🎸 😓 🍭 😞 🎤 😡 👩 🍙 😂 🐬 🏀 🏁 👸 🐩 🚑 🍨 😒 😈 😳 🎧 😣 😔 🚏 🎨 😨 😫 😲 🐑 👻 🎹 😼 🐦 🚊 🎪 🚱 🚧 🚋 💅 👽 🚾 🐒 🍱 🍞 🚎 🎴 😑 🙌 🎩 🚞 🚶 😕 🐺 🐗 🚩 🎯 🐼 🐮 😇 🚴 🍡 🚌 🎻 🚕 🚁 😱 😆 🍲 😏 😧 🚓 🍕 🚼 🐽 👴 👳 🙇 👦 🐠 🐱 🚃 🚆 🐷 😘 😬 😚"
-
-var emojis = emoji.split(" ");
-
 // function
 
 var standard = ["🇹","🇭","🇦","🇳","🇰","🇸","MIDDLE","🇯","🇼","❕","👏"];
 var hodge = ["🇳","🇴","MIDDLE","🇭","⭕","🇩","🇬","🇪","🇸","❕","👏"];
 var france = ["🇲","🇪","🇷","🇨","🇮","🇫🇷","🇯","🇼","❕","🥖"];
 var spain = ["🇬","🇷","🇦","🇨","🇮","🅰","🇸","🇪🇸","🇯","🇼","❕","🌮"];
+
+var emoji = "💁 👮 👿 🏇 🚅 🍖 🍫 🎫 🎼 🍠 👯 🐯 🏃 💃 🍪 🙅 🍤 🚐 🐸 🚈 💄 🐓 🐕 😛 🐜 😄 🍢 🐳 🍯 🚳 😍 🚪 🎺 😉 🍛 🐣 🐢 🚫 🚟 😃 😠 🚂 💀 🏂 🐧 😥 😶 🏆 🐲 🚚 🚒 🎶 😖 🚣 🎣 🚭 👰 🎷 🐻 🎾 👨 🚿 🎲 👫 🚜 🚢 🚹 😙 😴 🐴 🚲 🍝 🍣 😎 🐟 👶 😭 🍜 😽 😻 🐔 🎽 👱 💆 🙊 🐭 🚝 🍟 😐 🙀 👧 😦 🍮 🚰 🚤 🏈 🎵 😗 🚦 👪 🎸 😓 🍭 😞 🎤 😡 👩 🍙 😂 🐬 🏀 🏁 👸 🐩 🚑 🍨 😒 😈 😳 🎧 😣 😔 🚏 🎨 😨 😫 😲 🐑 👻 🎹 😼 🐦 🚊 🎪 🚱 🚧 🚋 💅 👽 🚾 🐒 🍱 🍞 🚎 🎴 😑 🙌 🎩 🚞 🚶 😕 🐺 🐗 🚩 🎯 🐼 🐮 😇 🚴 🍡 🚌 🎻 🚕 🚁 😱 😆 🍲 😏 😧 🚓 🍕 🚼 🐽 👴 👳 🙇 👦 🐠 🐱 🚃 🚆 🐷 😘 😬 😚"
+
+var emojis = emoji.split(" ");
+
 
 async function react(msg,strArray){
 	clearmyreactions(msg);
@@ -242,7 +287,39 @@ async function react(msg,strArray){
 	}
 }
 
+function richEmbedMessage(client,msg,colour,title,url,link,footer,del){
+	var channelX=msg.guild.channels.get(StarChannelID);
+	var authorn = "*"+msg.member.displayName + "* was pinned!";
+	const embed = new discord_Main.RichEmbed()
+		.setAuthor(authorn,url)
+		.setImage(link)
+		.setTimestamp()
+		.setURL(link)
+		.setFooter(footer,url)
+	channelX.send({embed}).catch(err => {
+			console.error("err:"+err.toString());
+		})
+}
 
+function embedMessage(client,msg,colour,title,url,description,footer,del){
+	var channelX=msg.guild.channels.get(StarChannelID);
+	channelX.send({embed: {
+	    color: colour,
+	    author: {
+	    	name: "*"+msg.member.displayName + "* was pinned!",
+	      	icon_url: msg.author.avatarURL
+	    },
+	    title: title,
+	    url: url,
+	    description: description,
+	    timestamp: new Date(),
+	    footer: {
+	      	icon_url: "http://i.imgur.com/eaxRtLk.png",
+	      	text: footer
+    }}}).catch(err => {
+			console.error("err:"+err.toString());
+		})
+}
 
 process.on("unhandledRejection", err => {
   console.error("Uncaught Promise Error: \n" + err.stack);

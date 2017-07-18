@@ -1,0 +1,14 @@
+2017-06-07 17:26:41: -- Analysis Started by User Command
+2017-06-07 17:26:41: L: State file does not exist: F:/#Files/#DOCUMENTS/Code/JWBot/_gsdata_/_file_state_v4._gs
+2017-06-07 17:26:41: R: State file does not exist: F:/#Files/#DOCUMENTS/Code/heroku/JWBot/_gsdata_/_file_state_v4._gs
+2017-06-07 17:26:42: /.gitignore: Warning: Older file to replace Newer file
+2017-06-07 17:26:42: Changes: 2, Conflicts: 0, CopyTime: 0, FixState: 5,166, Errors: 0, All: 5169
+2017-06-07 17:26:42: Left to Right: Copy File: 2 
+2017-06-07 17:26:42: -- Analysis Complete. Time 00:00:01, Speed: 5,169 files/s
+2017-06-07 17:26:42: 
+2017-06-07 17:26:44: New _gsdata_ folder(s) created, so rescan all job folders for their ghosts
+2017-06-07 17:26:44: == Sync Started by User Command
+2017-06-07 17:26:45: Copy Over 'F:/#Files/#DOCUMENTS/Code/JWBot/.gitignore' -> 'F:/#Files/#DOCUMENTS/Code/heroku/JWBot/.gitignore'
+2017-06-07 17:26:45: Copy Over 'F:/#Files/#DOCUMENTS/Code/JWBot/package.json' -> 'F:/#Files/#DOCUMENTS/Code/heroku/JWBot/package.json'
+2017-06-07 17:26:45: == Sync Complete. Time: 00:00:01, Speed: 2.52 MB/s, OK: 5,168, Errors: 0
+2017-06-07 17:26:45: 
