@@ -12,6 +12,9 @@ var discord_Main = require("discord.js");
 var client = new discord_Main.Client({autoReconnect:true});
 var fs = require("fs");
 var async = require('async');
+var sql = require("sqlite");
+sql.open("./config.sqlite");
+
 
 // Variable variables. The best type of variable.
 
@@ -19,7 +22,10 @@ var discord_Token = fs.readFileSync("./no_upload/token.txt").toString();
 var currentGame = "Big Pimpin' by Jay-Z.";
 var botName = "JWBot";
 
-var StarChannelID = "336923536117465088"; // 173036701499916288 voice 173163520043646976 main 336923536117465088 pin
+var StarChannelID; // 173036701499916288 voice 173163520043646976 main 336923536117465088 pin 336891766936698880 test
+var guildID;  // 173036701499916288 main 336891077854363649 test
+var reactionCount;
+var pinAllowed;
 
 var Roles = {
 
@@ -64,6 +70,18 @@ function checkURL(url) {
     return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
 }
 
+function checkURLGifv(url){
+    if(url.match(/\.(gifv|webm)$/) != null){
+		var newUrlSl = url.slice(0, -4);
+		var newUrl = newUrlSl + "gif";
+		return newUrl;
+	} else if (url.match(/\.(mp4)$/) != null){
+		var newUrlSl = url.slice(0, -3);
+		var newUrl = newUrlSl + "gif";
+		return newUrl;
+	}
+}
+
 function clearmyreactions(msg){
 	msg.reactions.forEach(reaction => {
 	  if (reaction.users.has(client.user.id)) reaction.remove(client.user);
@@ -91,6 +109,7 @@ var remoji = require("node-emoji");
 
 var addToBoard = remoji.emojify(':pushpin:').toString();
 var lock = remoji.emojify(':lock:').toString();
+var override = remoji.emojify(':smiley:').toString();
 
 function RefreshPop(){
 		PopIsh = fs.readFileSync("./no_upload/david.txt").toString().split("\n");
@@ -105,6 +124,77 @@ function isAdmin(user){
 	}
 }
 
+function isDan(user){
+	if (user.id=="184050496393183232"){
+		return true;
+	}
+}
+
+
+async function sqlDealing(msg,act,columnname,c_value){
+	sql.get(`SELECT * FROM config WHERE guildId = "${msg.guild.id}"`).then(row => {
+		if (!row) { // Can't find the row.
+			sql.run("INSERT INTO config (guildId, pinboardId, pinsNeeded, pinAllowed) VALUES (?, ?, ?, 0)", [msg.guild.id, 1, 0]);
+		} else {
+			if (act=="change" && columnname && c_value){
+				sql.run(`UPDATE config SET `+columnname+` = `+c_value+` WHERE guildId = "${msg.guild.id}"`);
+			} else if (act=="view" && columnname){
+				return row[columnname];
+			}
+		}
+	}).catch(() => {
+		console.error; // Gotta log those errors
+		sql.run("CREATE TABLE IF NOT EXISTS config (guildId TEXT, pinboardId TEXT, pinsNeeded INTEGER, pinAllowed INTEGER)").then(() => {
+			sql.run("INSERT INTO config (guildId, pinboardId, pinsNeeded, pinAllowed) VALUES (?, ?, ?, 0)", [msg.guild.id, 1, 0]);
+		});
+	});
+}
+
+function messageReactions(reaction,user){
+	var reactedmessage = reaction.message;
+	sql.get(`SELECT * FROM config WHERE guildId = "${reactedmessage.guild.id}"`).then(row => {
+		var msgContent = reactedmessage.content;
+		var stopx = false;
+		let StarChannelID = row.pinboardId;
+		let guildID = row.guildId;
+		let reactionCount = row.pinsNeeded;
+		let pinAllowed = row.pinAllowed;
+		if (reactedmessage.attachments.first()){
+			msgContent=reactedmessage.attachments.first().proxyURL;
+		}
+		var reactemoji = reaction.emoji.toString();
+		if ((reactedmessage.guild.id!=guildID) || (pinAllowed == 0)){
+			var stopx=true;
+		}
+		if (reactemoji.toLowerCase() == addToBoard.toLowerCase() && (!reaction.me) && (reactedmessage.author.id!=client.user.id) && (reaction.count>=reactionCount)){ //(reactedmessage.author.id!=user.id)
+			// is the right emoji
+			var reactions = reactedmessage.reactions.values();
+			for (var reactionx of reactions){
+				if (reactionx.me && (reactionx.emoji.toString() == lock)){
+					// Already pinned x
+					console.log("Already pinned.");
+					var stopx = true;
+				}
+			}
+			if (stopx==false){
+				var stopx = true;
+				react(reactedmessage,lockarray);
+				var msgContent = reactedmessage.content;
+				// locked and ready to proceed
+				var ranCol = Number('0x'+Math.floor(Math.random()*16777215).toString(16));
+				if (checkURLGifv(msgContent)){
+					var msgContent = checkURLGifv(msgContent);
+				};
+				if (checkURL(msgContent)){
+					richEmbedMessage(client,reactedmessage,ranCol,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id,StarChannelID);
+				} else {
+					embedMessage(client,reactedmessage,ranCol,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id,StarChannelID);
+				}
+			}
+		}
+	})
+}
+
 var lockarray = [lock];
 
 client.on("error",console.error);
@@ -114,35 +204,7 @@ process.on("unhandledRejection",console.log);
 var debounce = false;
 
 client.on('messageReactionAdd', (reaction, user) => {
-	var stopx = false;
-	var reactedmessage = reaction.message;
-	var msgContent = reactedmessage.content;
-	var reactemoji = reaction.emoji.toString();
-	if (reactedmessage.guild.id!="173036701499916288"){ // 173036701499916288 336891077854363649
-		var stopx=true;
-	}
-	if (reactemoji.toLowerCase() == addToBoard.toLowerCase() && (!reaction.me) && (reactedmessage.author.id!=client.user.id) && (reaction.count>=5)){ //(reactedmessage.author.id!=user.id)
-		// is the right emoji
-		var reactions = reactedmessage.reactions.values();
-		for (var reactionx of reactions){
-			if (reactionx.me && (reactionx.emoji.toString() == lock)){
-				// Already pinned x
-				console.log("Already pinned.");
-				var stopx = true;
-			}
-		}
-		if (stopx==false){
-			var stopx = true;
-			react(reactedmessage,lockarray);
-			// locked and ready to proceed
-			var ranCol = Number('0x'+Math.floor(Math.random()*16777215).toString(16));
-			if (checkURL(msgContent)){
-				richEmbedMessage(client,reactedmessage,ranCol,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id);
-			} else {
-				embedMessage(client,reactedmessage,ranCol,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id);
-			}
-		}
-	}
+	messageReactions(reaction,user);
 });
 
 client.on("message", msg => {
@@ -156,6 +218,7 @@ client.on("messageUpdate", (msgOld,msgNew) => {
 //	msg.react("mack:244108925828333568");
 
 function general(msg,xtype){
+	sqlDealing(msg);
 	while (debounce==false){
 		setTimeout(function() {}, 3000);
 	};
@@ -193,6 +256,38 @@ function general(msg,xtype){
 	if (msgContent.toLowerCase()==".syntheticjw-fr" && (isAdmin(msg.author))){
 		react(msg,france);
 	};
+	if (msgContent.toLowerCase()==".config" && (isAdmin(msg.author))){
+		var batch = "";
+		sql.get(`SELECT * FROM config WHERE guildId = "${msg.guild.id}"`).then(row => {
+			var PinsAllowed = row.pinAllowed==1 ? "true" : "false";
+			if (PinsAllowed=="False"){
+				msg.channel.send("**pinAllowed:** false");
+			} else {
+				var guildIDx = row.guildId.toString();
+				var pinsNeededx = row.pinsNeeded.toString();
+				var pinboardIdx = row.pinboardId.toString();
+				var batch = "**pinAllowed:** true"
+				var batch = batch + "\n" + "**pinsNeeded:** "+pinsNeededx + "\n" + "**pinboardId:** "+pinboardIdx + "\n" + "**guildId:** "+guildIDx
+				msg.channel.send(batch);
+			}
+		});
+	}
+	if (msgContent.toLowerCase().startsWith(".config ") && (isDan(msg.author))){
+		var acccolumns = ["guildId","pinboardId","pinsNeeded","pinAllowed"];
+		var aftercommandx = msgContent.substring(8);
+		var toChange = aftercommandx.split(" ")[0];
+		if (acccolumns.indexOf(toChange)!=-1){
+			var changeTo = aftercommandx.split(" ")[1];
+			if (toChange=="pinAllowed"){
+				if (changeTo=="false"){ var changeTo=0 };
+				if (changeTo=="true"){ var changeTo=1 };
+			}
+			if (toChange=="pinsNeeded"){
+				var changeTo = Number(changeTo);
+			}
+			sqlDealing(msg,"change",toChange,changeTo);
+		}
+	}
 	if (msgContent.toLowerCase()==".david" && (msg.author.id=="118024181177778183")){
 		var randomTS = PopIsh[Math.floor(Math.random() * PopIsh.length)];
 		msg.channel.send(randomTS);
@@ -288,23 +383,24 @@ async function react(msg,strArray){
 	}
 }
 
-function richEmbedMessage(client,msg,colour,title,url,link,footer,del){
-	var channelX=msg.guild.channels.get(StarChannelID);
+function richEmbedMessage(client,msg,colour,title,url,link,footer,ch_id){
+	var channelX=msg.guild.channels.get(ch_id);
 	var authorn = "*"+msg.member.displayName + "* was pinned!";
 	const embed = new discord_Main.RichEmbed()
-		.setAuthor(authorn,url)
+		.setAuthor(authorn,msg.author.avatarURL,url)
 		.setImage(link)
 		.setTimestamp()
 		.setURL(link)
 		.setFooter(footer,"http://i.imgur.com/eaxRtLk.png")
-		.setThumbnail(msg.author.avatarURL)
+		//.setThumbnail(msg.author.avatarURL)
+		.setColor("RANDOM")
 	channelX.send({embed}).catch(err => {
 			console.error("err:"+err.toString());
 		})
 }
 
-function embedMessage(client,msg,colour,title,url,description,footer,del){
-	var channelX=msg.guild.channels.get(StarChannelID);
+function embedMessage(client,msg,colour,title,url,description,footer,ch_id){
+	var channelX=msg.guild.channels.get(ch_id);
 	channelX.send({embed: {
 	    color: colour,
 	    author: {
