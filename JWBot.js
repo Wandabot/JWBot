@@ -153,6 +153,7 @@ async function sqlDealing(msg,act,columnname,c_value){
 function messageReactions(reaction,user){
 	var reactedmessage = reaction.message;
 	sql.get(`SELECT * FROM config WHERE guildId = "${reactedmessage.guild.id}"`).then(row => {
+		var reactedmessage = reaction.message;
 		var msgContent = reactedmessage.content;
 		var stopx = false;
 		let StarChannelID = row.pinboardId;
@@ -160,7 +161,7 @@ function messageReactions(reaction,user){
 		let reactionCount = row.pinsNeeded;
 		let pinAllowed = row.pinAllowed;
 		if (reactedmessage.attachments.first()){
-			msgContent=reactedmessage.attachments.first().proxyURL;
+			var msgContent=reactedmessage.attachments.first().proxyURL;
 		}
 		var reactemoji = reaction.emoji.toString();
 		if ((reactedmessage.guild.id!=guildID) || (pinAllowed == 0)){
@@ -172,14 +173,12 @@ function messageReactions(reaction,user){
 			for (var reactionx of reactions){
 				if (reactionx.me && (reactionx.emoji.toString() == lock)){
 					// Already pinned x
-					console.log("Already pinned.");
 					var stopx = true;
 				}
 			}
 			if (stopx==false){
 				var stopx = true;
 				react(reactedmessage,lockarray);
-				var msgContent = reactedmessage.content;
 				// locked and ready to proceed
 				var ranCol = Number('0x'+Math.floor(Math.random()*16777215).toString(16));
 				if (checkURLGifv(msgContent)){
