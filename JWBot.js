@@ -19,7 +19,7 @@ sql.open("./config.sqlite");
 // Variable variables. The best type of variable.
 
 var discord_Token = fs.readFileSync("./no_upload/token.txt").toString();
-var currentGame = "Big Pimpin' by Jay-Z.";
+var currentGame = ".invite -> invite link! ♥";
 var botName = "JWBot";
 
 var StarChannelID; // 173036701499916288 voice 173163520043646976 main 336923536117465088 pin 336891766936698880 test
@@ -217,7 +217,9 @@ client.on("messageUpdate", (msgOld,msgNew) => {
 //	msg.react("mack:244108925828333568");
 
 function general(msg,xtype){
-	sqlDealing(msg);
+	if (msg.channel.type!="dm"){
+		sqlDealing(msg);
+	}
 	while (debounce==false){
 		setTimeout(function() {}, 3000);
 	};
@@ -231,6 +233,11 @@ function general(msg,xtype){
 		  	msg.react("👮");
 		}
 	};
+	if (msgContent.toLowerCase()==".invite" && msg.author.id!=client.user.id){
+		console.log("Sending invite link to "+msg.author.username);
+		var inviteLink = "https://discordapp.com/oauth2/authorize?&client_id="+client.user.id+"&scope=bot";
+		msg.author.send(inviteLink);
+	}
 	if (searchforstr(msgContent,"log") && msg.channel.type=="dm" && msg.author.id!=client.user.id){
 		client.users.get("184050496393183232").send("New log from "+msg.author.username+": "+msgContent);
 	};
@@ -255,6 +262,11 @@ function general(msg,xtype){
 	if (msgContent.toLowerCase()==".syntheticjw-fr" && (isAdmin(msg.author))){
 		react(msg,france);
 	};
+	if (msgContent.toLowerCase()==".delete" && (isDan(msg.author))){
+		sql.get(`SELECT * FROM config WHERE guildId = "${msg.guild.id}"`).then(row => {
+			let StarChannelID = row.pinboardId;
+			try { msg.guild.channels.get(StarChannelID).messages.first().delete() } catch(err){ console.error };
+	})}
 	if (msgContent.toLowerCase()==".config" && (isAdmin(msg.author))){
 		var batch = "";
 		sql.get(`SELECT * FROM config WHERE guildId = "${msg.guild.id}"`).then(row => {
