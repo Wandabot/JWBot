@@ -67,7 +67,9 @@ function searchforstr(msgContent,str){
 }
 
 function checkURL(url) {
-    return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+	if (url.indexOf(" ")==-1){
+    	return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+	};
 }
 
 function checkURLGifv(url){
@@ -108,7 +110,7 @@ var adminIDs = ["163015294346854400","184050496393183232"];
 var remoji = require("node-emoji");
 
 var addToBoard = remoji.emojify(':pushpin:').toString();
-var lock = remoji.emojify(':lock:').toString();
+var lock = remoji.emojify(':white_check_mark:').toString();
 var override = remoji.emojify(':smiley:').toString();
 
 function RefreshPop(){
@@ -153,6 +155,7 @@ async function sqlDealing(msg,act,columnname,c_value){
 function messageReactions(reaction,user){
 	var reactedmessage = reaction.message;
 	sql.get(`SELECT * FROM config WHERE guildId = "${reactedmessage.guild.id}"`).then(row => {
+		var attachmentx = false;
 		var reactedmessage = reaction.message;
 		var msgContent = reactedmessage.content;
 		var stopx = false;
@@ -161,6 +164,7 @@ function messageReactions(reaction,user){
 		let reactionCount = row.pinsNeeded;
 		let pinAllowed = row.pinAllowed;
 		if (reactedmessage.attachments.first()){
+			var attachmentx = reactedmessage.content;
 			var msgContent=reactedmessage.attachments.first().proxyURL;
 		}
 		var reactemoji = reaction.emoji.toString();
@@ -185,7 +189,11 @@ function messageReactions(reaction,user){
 					var msgContent = checkURLGifv(msgContent);
 				};
 				if (checkURL(msgContent)){
-					richEmbedMessage(client,reactedmessage,ranCol,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id,StarChannelID);
+					if (attachmentx!=false){
+						richEmbedMessage(client,reactedmessage,ranCol,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id,StarChannelID,attachmentx);
+					} else {
+						richEmbedMessage(client,reactedmessage,ranCol,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id,StarChannelID);
+					}
 				} else {
 					embedMessage(client,reactedmessage,ranCol,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id,StarChannelID);
 				}
@@ -224,7 +232,7 @@ function general(msg,xtype){
 		setTimeout(function() {}, 3000);
 	};
 	var debounce = true;
-	var msgContent = msg.content;
+	var msgContent = msg.cleanContent;
 	/*if (searchforstr(msgContent,"snake") && msg.author.username=="dan"){
 		msg.reply("snake: "+msg.guild.members.array()[Math.floor(Math.random() * msg.guild.members.array().length)].displayName);
 	};*/
@@ -271,7 +279,7 @@ function general(msg,xtype){
 		var batch = "";
 		sql.get(`SELECT * FROM config WHERE guildId = "${msg.guild.id}"`).then(row => {
 			var PinsAllowed = row.pinAllowed==1 ? "true" : "false";
-			if (PinsAllowed=="False"){
+			if (PinsAllowed=="false"){
 				msg.channel.send("**pinAllowed:** false");
 			} else {
 				var guildIDx = row.guildId.toString();
@@ -394,10 +402,10 @@ async function react(msg,strArray){
 	}
 }
 
-function richEmbedMessage(client,msg,colour,title,url,link,footer,ch_id){
+function richEmbedMessage(client,msg,colour,title,url,link,footer,ch_id,attachmentx){
 	var channelX=msg.guild.channels.get(ch_id);
 	var authorn = "*"+msg.member.displayName + "* was pinned!";
-	const embed = new discord_Main.RichEmbed()
+	let embed = new discord_Main.RichEmbed()
 		.setAuthor(authorn,msg.author.avatarURL,url)
 		.setImage(link)
 		.setTimestamp()
@@ -405,6 +413,9 @@ function richEmbedMessage(client,msg,colour,title,url,link,footer,ch_id){
 		.setFooter(footer,"http://i.imgur.com/eaxRtLk.png")
 		//.setThumbnail(msg.author.avatarURL)
 		.setColor("RANDOM")
+	if (attachmentx){
+		embed.setDescription(attachmentx);
+	}
 	channelX.send({embed}).catch(err => {
 			console.error("err:"+err.toString());
 		})
