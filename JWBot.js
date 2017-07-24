@@ -68,7 +68,7 @@ function searchforstr(msgContent,str){
 
 function checkURL(url) {
 	if (url.indexOf(" ")==-1){
-    	return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+    	return(url.match(/\.(jpeg|jpg|gif|png|gifv|webm|mp4)$/) != null);
 	};
 }
 
@@ -184,17 +184,28 @@ function messageReactions(reaction,user){
 				var stopx = true;
 				react(reactedmessage,lockarray);
 				// locked and ready to proceed
-				var ranCol = Number('0x'+Math.floor(Math.random()*16777215).toString(16));
+				var embeddedLink = "";
+				var msgSplit = msgContent.split(" ")
+				var filteredSplit = msgSplit.filter(t => checkURL(t));
+				var embeddedLink = filteredSplit[0] ? filteredSplit[0] : "";
+				if (embeddedLink!="" && msgSplit.length>=2){
+					var attachmentx=reactedmessage.content;
+					var msgContent=embeddedLink;
+					if (checkURLGifv(embeddedLink)){
+						var msgContent = checkURLGifv(msgContent);
+					};
+				}
 				if (checkURLGifv(msgContent)){
 					var msgContent = checkURLGifv(msgContent);
 				};
 				if (checkURL(msgContent)){
 					if (attachmentx!=false){
-						richEmbedMessage(client,reactedmessage,ranCol,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id,StarChannelID,attachmentx);
+						richEmbedMessage(client,reactedmessage,0x8b0000,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id,StarChannelID,attachmentx);
 					} else {
-						richEmbedMessage(client,reactedmessage,ranCol,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id,StarChannelID);
+						richEmbedMessage(client,reactedmessage,0x8b0000,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id,StarChannelID);
 					}
 				} else {
+					var ranCol = Number('0x'+Math.floor(Math.random()*16777215).toString(16));
 					embedMessage(client,reactedmessage,ranCol,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id,StarChannelID);
 				}
 			}
@@ -414,6 +425,7 @@ function richEmbedMessage(client,msg,colour,title,url,link,footer,ch_id,attachme
 		//.setThumbnail(msg.author.avatarURL)
 		.setColor("RANDOM")
 	if (attachmentx){
+		embed.setFooter(footer+" (first image embedded)","http://i.imgur.com/eaxRtLk.png")
 		embed.setDescription(attachmentx);
 	}
 	channelX.send({embed}).catch(err => {
