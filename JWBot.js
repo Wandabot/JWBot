@@ -206,6 +206,9 @@ function messageReactions(reaction,user){
 					}
 				} else {
 					var ranCol = Number('0x'+Math.floor(Math.random()*16777215).toString(16));
+					if (attachmentx){
+						var msgContent=attachmentx + "\n" + msgContent;
+					};
 					embedMessage(client,reactedmessage,ranCol,"","https://www.reddit.com/r/MHoC",msgContent,reactedmessage.id,StarChannelID);
 				}
 			}
