@@ -405,6 +405,7 @@ var emojis = emoji.split(" ");
 
 
 async function react(msg,strArray){
+	msg.channel.startTyping();
 	clearmyreactions(msg);
 	if (!strArray){ var strArray = standard };
 	for (var emojin in strArray){
@@ -414,6 +415,7 @@ async function react(msg,strArray){
 		};
 		await msg.react(emoji);
 	}
+	msg.channel.stopTyping();
 }
 
 function richEmbedMessage(client,msg,colour,title,url,link,footer,ch_id,attachmentx){
