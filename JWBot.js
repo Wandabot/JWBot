@@ -164,7 +164,7 @@ function messageReactions(reaction,user){
 		let reactionCount = row.pinsNeeded;
 		let pinAllowed = row.pinAllowed;
 		if (reactedmessage.attachments.first()){
-			var attachmentx = reactedmessage.content;
+			var attachmentx = reactedmessage.content ? reactedmessage.content : false;
 			var msgContent=reactedmessage.attachments.first().proxyURL;
 		}
 		var reactemoji = reaction.emoji.toString();
@@ -405,8 +405,9 @@ var emojis = emoji.split(" ");
 
 
 async function react(msg,strArray){
-	msg.channel.startTyping();
+	await msg.channel.startTyping();
 	clearmyreactions(msg);
+	await msg.channel.stopTyping();
 	if (!strArray){ var strArray = standard };
 	for (var emojin in strArray){
 		var emoji = strArray[emojin];
@@ -415,7 +416,6 @@ async function react(msg,strArray){
 		};
 		await msg.react(emoji);
 	}
-	msg.channel.stopTyping();
 }
 
 function richEmbedMessage(client,msg,colour,title,url,link,footer,ch_id,attachmentx){
